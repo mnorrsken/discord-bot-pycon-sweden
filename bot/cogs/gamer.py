@@ -2,17 +2,14 @@ import random
 
 import discord
 from discord.ext import commands
-from source.source import SourceFileStrategy
-from source.json import JsonFileStrategy
-
-gamesSource: SourceFileStrategy = JsonFileStrategy("data.json")
+from source.main import games_source
 
 
 class NewGame(discord.ui.Modal, title="New Game"):
     name = discord.ui.TextInput(label="Name", placeholder="Type name here...", min_length=3, max_length=50)
 
     async def on_submit(self, interaction: discord.Interaction):
-        gamesSource.add_game(self.name.value)
+        games_source.add_game(self.name.value)
         await interaction.response.send_message(
             f"Thanks for your for adding new game, {self.name.value}!", ephemeral=True
         )
@@ -57,7 +54,7 @@ class VoteView(discord.ui.View):
 
     def __init__(self):
         super().__init__()
-        for game in gamesSource.get_games():
+        for game in self.games_source.get_games():
             self.results[game] = 0
             self.add_item(VoteButton(label=game))
 
@@ -115,7 +112,7 @@ class GammerCogs(commands.Cog):
         view = discord.ui.View()
         options = [
             discord.SelectOption(label=game, description=f"Pick this if like {game}!")
-            for game in gamesSource.get_games()
+            for game in games_source.get_games()
         ]
         select = discord.ui.Select(
             placeholder="Choose your game!", min_values=2, max_values=len(options), options=options
