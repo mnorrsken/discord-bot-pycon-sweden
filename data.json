@@ -1,6 +1,14 @@
-{
-    'FIFA',
-    'SIMS',
-    'LOL',
-    'Dota2'
-}
+[
+    {
+        "game_name": "FIFA"
+    },
+    {
+        "game_name": "SIMS"
+    },
+    {
+        "game_name": "LOL"
+    },
+    {
+        "game_name": "Dota2"
+    }
+]
