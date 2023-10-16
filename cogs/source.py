@@ -1,28 +1,23 @@
 from abc import ABC, abstractmethod
 import json
+from typing import Optional
 
 
-class Source(ABC):
+class SourceFileStrategy(ABC):
     @abstractmethod
-    def get_games():
-        file = open("src/data.json")
-        data = json.load(file)
-        for game in data:
-            print(game)
+    def get_game(self, game_name: str):
+        pass
 
     @abstractmethod
-    def add_games(game_name: str):
-        file = open("src/data.json")
-        data = json.load(file)
-        data.update(game_name)
-        print(f"{game_name} added into file")
+    def add_game(
+        self,
+        game_name: str,
+        release_year: int,
+        rating: Optional[int] = None,
+        developer: Optional[str] = None,
+    ):
+        pass
 
     @abstractmethod
-    def update_game(game_name: str, new_name: str):
-        file = open("src/data.json")
-        data = json.load(file)
-        file[game_name] = new_name
-
-        file.seek(0)
-        json.dump(data, file)
-        file.truncate()
+    def update_game(self, game_name: str, rating: int):
+        pass
