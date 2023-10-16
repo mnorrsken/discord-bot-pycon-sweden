@@ -4,7 +4,8 @@ from discord.ext import commands
 
 from cogs.gamer import GammerCogs
 from config import DISCORD_TOKEN, GUILD_ID
-
+from source.source import SourceFileStrategy
+from source.json import JsonFileStrategy
 
 class Bot(commands.Bot):
     def __init__(self):
