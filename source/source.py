@@ -1,0 +1,29 @@
+from abc import ABC, abstractmethod
+from typing import Optional
+
+
+class SourceFileStrategy(ABC):
+    @abstractmethod
+    def get_games(self):
+        pass
+
+    @abstractmethod
+    def get_game(self, game_name: str):
+        pass
+
+    @abstractmethod
+    def add_game(
+        self,
+        game_name: str,
+        release_year: Optional[int] = None,
+        rating: Optional[int] = None,
+        developer: Optional[str] = None,
+    ):
+        pass
+
+    @abstractmethod
+    def update_game(self, game_name: str, rating: int):
+        pass
+
+
+# print(data_source.get_game("FIFA"))
