@@ -25,5 +25,6 @@ class SourceFileStrategy(ABC):
     def update_game(self, game_name: str, rating: int):
         pass
 
-
-# print(data_source.get_game("FIFA"))
+    @abstractmethod
+    def delete_game(self, game_name: str):
+        pass
