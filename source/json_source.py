@@ -1,8 +1,7 @@
 import json
-from source.source import SourceFileStrategy
+from source.strategy import SourceFileStrategy
 
 
-# TODO: refactor, create class for load and save json file
 class JsonFileStrategy(SourceFileStrategy):
     def __init__(self):
         self.file = "source/data.json"

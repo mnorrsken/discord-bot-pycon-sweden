@@ -22,7 +22,12 @@ class SourceFileStrategy(ABC):
         pass
 
     @abstractmethod
-    def update_game(self, game_name: str, rating: int):
+    def update_game(
+        self,
+        game_name: str,
+        new_game_name: Optional[str] = None,
+        new_rating: Optional[int] = None,
+    ):
         pass
 
     @abstractmethod
