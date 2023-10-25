@@ -3,6 +3,44 @@ import random
 import discord
 from discord.ext import commands
 from source.main import games_source
+from config import CHANNEL_ID
+from bot.ranking_embeded import get_ranking_embeded, add_xp
+
+# https://replit.com/@maxc0dez/levelling-system#levelsys.py
+
+
+async def refresh_channel_games(bot):
+
+    # Getting the channel
+    channel = bot.get_channel(CHANNEL_ID)
+    # channel.purge
+    # channel.get
+    # channel.delete_messages()
+    # Getting the role
+    # role = discord.utils.get(channel.guild.roles, name='Orange')
+    # Sending the message
+    await channel.purge(limit=5)
+
+    # embed
+    # nameslist = '\n'.join(nameslist) # Joining the list with newline as the delimiter
+    # for game in games_source.get_games():
+    games = games_source.get_games()
+    print(games)
+    # nameslist = "\n".join(games)
+    # print(nameslist)
+    embeds = []
+    for game in games:
+        em = discord.Embed(
+            title=game,
+            # url="https://realdrewdata.medium.com/",
+            description="This is an embed that will show how to build an embed and the different components",
+            color=0x109319,
+        )
+        embeds.append(em)
+        # embeds.add_field(name="GAMES", value=nameslist)
+    print(embeds)
+    message = await channel.send(embeds=embeds)
+    await channel.send(view=VoteView())
 
 
 class NewGame(discord.ui.Modal, title="New Game"):
@@ -10,8 +48,20 @@ class NewGame(discord.ui.Modal, title="New Game"):
 
     async def on_submit(self, interaction: discord.Interaction):
         games_source.add_game(self.name.value)
+        embed = GameEmbeded(title=self.name.value)
         await interaction.response.send_message(
-            f"Thanks for your for adding new game, {self.name.value}!", ephemeral=True
+            f"Thanks for your for adding new game, {self.name.value}!", ephemeral=True, embed=embed
+        )
+
+
+class GameEmbeded(discord.Embed):
+    def __init__(self, title):
+        super().__init__(
+            title=title,
+            url="https://store.steampowered.com/app/1811260/EA_SPORTS_FIFA_23/",
+            # https://store.steampowered.com/search/?term=Fifa+23
+            description="This is an embed that will show how to build an embed and the different components",
+            color=0x109319,
         )
 
 
@@ -54,7 +104,7 @@ class VoteView(discord.ui.View):
 
     def __init__(self):
         super().__init__()
-        for game in self.games_source.get_games():
+        for game in games_source.get_games():
             self.results[game] = 0
             self.add_item(VoteButton(label=game))
 
@@ -130,6 +180,51 @@ class GammerCogs(commands.Cog):
     async def vote(self, interaction: discord.Interaction):
         await interaction.response.send_message(f"Select to want play", view=VoteView())
 
+    @discord.app_commands.command(name="ranking", description="get ranking")
+    async def ranking(self, interaction: discord.Interaction):
+        print(interaction.user)
+        print(interaction.user.id)
+        await interaction.response.send_message(embed=get_ranking_embeded(interaction.user))
+
     @discord.app_commands.command(name="add-new-game", description="Select game")
     async def new_game(self, interaction: discord.Interaction):
         await interaction.response.send_modal(NewGame())
+        # await add
+        add_xp(interaction.user)
+        await refresh_channel_games(self.bot)
+
+    @discord.app_commands.command(name="game-details", description="Select game")
+    async def game_details(self, interaction: discord.Interaction):
+        # view =
+        # self.
+        view = discord.ui.View()
+        embed = discord.Embed(
+            title="Sample Embed",
+            url="https://realdrewdata.medium.com/",
+            description="This is an embed that will show how to build an embed and the different components",
+            color=0x109319,
+        )
+
+        # Add author, thumbnail, fields, and footer to the embed
+        embed.set_author(
+            name="RealDrewData",
+            url="https://twitter.com/RealDrewData",
+            icon_url="https://pbs.twimg.com/profile_images/1327036716226646017/ZuaMDdtm_400x400.jpg",
+        )
+
+        embed.set_thumbnail(url="https://i.imgur.com/axLm3p6.jpeg")
+
+        embed.add_field(
+            name="Field 1 Title", value="This is the value for field 1. This is NOT an inline field.", inline=False
+        )
+        embed.add_field(name="Field 2 Title", value="It is inline with Field 3", inline=True)
+        embed.add_field(name="Field 3 Title", value="It is inline with Field 2", inline=True)
+
+        embed.set_footer(text="This is the footer. It contains text at the bottom of the embed")
+        # view.add_item(embed)
+        embed = GameEmbeded()
+        await interaction.response.send_message(embed=embed)
+        await refresh_channel_games(self.bot)
+
+        # return self.
+        # await interaction.response.send_modal(NewGame())

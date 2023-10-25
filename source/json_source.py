@@ -27,7 +27,7 @@ class JsonFileStrategy(SourceFileStrategy):
         rating: int | None = None,
         developer: str | None = None,
     ):
-        with open(self.file_path, "r") as file:
+        with open(self.file, "r") as file:
             data = json.load(file)
 
         new_game = {
@@ -38,7 +38,7 @@ class JsonFileStrategy(SourceFileStrategy):
         }
         data.append(new_game)
 
-        with open(self.file_path, "w") as file:
+        with open(self.file, "w") as file:
             json.dump(data, file)
 
     def update_game(
@@ -47,7 +47,7 @@ class JsonFileStrategy(SourceFileStrategy):
         new_game_name: str | None = None,
         new_rating: int | None = None,
     ):
-        with open(self.file_path, "r") as file:
+        with open(self.file, "r") as file:
             data = json.load(file)
 
         for item in data:
@@ -58,14 +58,14 @@ class JsonFileStrategy(SourceFileStrategy):
                     item["rating"] = new_rating
                 break
 
-        with open(self.file_path, "w") as file:
+        with open(self.file, "w") as file:
             json.dump(data, file)
 
     def delete_game(self, game_name: str):
-        with open(self.file_path, "r") as file:
+        with open(self.file, "r") as file:
             data = json.load(file)
 
         data = [item for item in data if item["game_name"] != game_name]
 
-        with open(self.file_path, "w") as file:
+        with open(self.file, "w") as file:
             json.dump(data, file)
