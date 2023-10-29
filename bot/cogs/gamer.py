@@ -10,7 +10,6 @@ from bot.ranking_embeded import get_ranking_embeded, add_xp
 
 
 async def refresh_channel_games(bot):
-
     # Getting the channel
     channel = bot.get_channel(CHANNEL_ID)
     # channel.purge
@@ -29,7 +28,7 @@ async def refresh_channel_games(bot):
     # nameslist = "\n".join(games)
     # print(nameslist)
     embeds = []
-    for game in games:
+    for game in games[:10]:
         em = discord.Embed(
             title=game,
             # url="https://realdrewdata.medium.com/",
@@ -117,6 +116,12 @@ class GammerCogs(commands.Cog):
     async def hello(self, interaction: discord.Interaction):
         await interaction.response.send_message(f"Hello {interaction.user.name}!")
 
+    @discord.app_commands.command(name="ranking", description="get ranking")
+    async def ranking(self, interaction: discord.Interaction):
+        print(interaction.user)
+        print(interaction.user.id)
+        await interaction.response.send_message(embed=get_ranking_embeded(interaction.user))
+
     @discord.app_commands.command(name="hello-button", description="Bot says hello to you")
     async def hello_button(self, interaction: discord.Interaction):
         view = discord.ui.View()
@@ -180,12 +185,6 @@ class GammerCogs(commands.Cog):
     async def vote(self, interaction: discord.Interaction):
         await interaction.response.send_message(f"Select to want play", view=VoteView())
 
-    @discord.app_commands.command(name="ranking", description="get ranking")
-    async def ranking(self, interaction: discord.Interaction):
-        print(interaction.user)
-        print(interaction.user.id)
-        await interaction.response.send_message(embed=get_ranking_embeded(interaction.user))
-
     @discord.app_commands.command(name="add-new-game", description="Select game")
     async def new_game(self, interaction: discord.Interaction):
         await interaction.response.send_modal(NewGame())
@@ -205,7 +204,6 @@ class GammerCogs(commands.Cog):
             color=0x109319,
         )
 
-        # Add author, thumbnail, fields, and footer to the embed
         embed.set_author(
             name="RealDrewData",
             url="https://twitter.com/RealDrewData",
@@ -221,10 +219,6 @@ class GammerCogs(commands.Cog):
         embed.add_field(name="Field 3 Title", value="It is inline with Field 2", inline=True)
 
         embed.set_footer(text="This is the footer. It contains text at the bottom of the embed")
-        # view.add_item(embed)
         embed = GameEmbeded()
         await interaction.response.send_message(embed=embed)
         await refresh_channel_games(self.bot)
-
-        # return self.
-        # await interaction.response.send_modal(NewGame())

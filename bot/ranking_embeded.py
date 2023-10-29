@@ -1,55 +1,58 @@
 import discord
+from typing import Union
+from discord import User, Member
+from pydantic import BaseModel
 
-level_data = {398601935873114123: 30}
+from typing import Dict
+from pydantic import BaseModel
 
 
-def add_xp(user):
+class PlayerDetails(BaseModel):
+    exp: int
+    level: int
+
+
+class Players(BaseModel):
+    players: Dict[int, PlayerDetails]
+
+
+ranking = Players(players={398601935873114123: {"exp": 50, "level": 3}})
+
+
+def add_xp(user: Union[User, Member]):
     print(type(user.id))
-    if user.id in level_data:
-        level_data[user.id] = level_data[user.id] + 10
+    if user.id in ranking.players:
+        ranking.players[user.id].exp = ranking.players[user.id].exp + 50
+        if ranking.players[user.id].exp == 100:
+            ranking.players[user.id].exp = 0
+            ranking.players[user.id].level = ranking.players[user.id].level + 1
     else:
-        level_data[user.id] = 10
+        ranking.players.players[user.id] = PlayerDetails(exp=50, level=1)
 
 
-def get_ranking_embeded(user):
-    # level_data = {}
-    # temp = sorted(level_data.items(), ke =lambda x: x[1])
-    # for i in range(len(temp)):
-    #     level_data[temp[i][0]] = temp[i][1]
-    print(level_data)
-
+def get_ranking_embeded(user: Union[User, Member]):
+    print(ranking)
     print(user.id)
     print(type(user.id))
-    if user.id in level_data:
-        xp = level_data[user.id]
+
+    if user.id in ranking.players:
+        xp = ranking.players[user.id].exp
         print(True, xp)
     else:
+        ranking.players[user.id] = PlayerDetails(exp=0, level=1)
         xp = 0
         print(False, xp)
-        level_data[user.id] = 0
 
     print(xp)
-    # xp = 30
-    # rank = list(leveldata).index(author.id)
-    xp *= 5
-    lvl = 0
-    while True:
-        if xp < ((50 * (lvl**2)) + (50 * lvl)):
-            break
-        lvl += 1
-    xp -= (50 * ((lvl - 1) ** 2)) + (50 * (lvl - 1))
-    boxes = int((xp / (200 * ((1 / 2) * (lvl))) * 20))
-    embed = discord.Embed(title=f"{user.id}'s level stats", description="", color=0x397882)
-    # embed = discord.Embed(title = "Kamil Kulig's level stats".format(.author.name), description="", color= 0x397882)
-    # embed.add_field(name="Name", value=self.author.mention, inline=True)
-    embed.add_field(name="XP", value=f"{xp}/{int(200 *(1/2) *lvl)}", inline=True)
-    embed.add_field(name="Level", value=lvl, inline=True)
-    # embed.add_field(name="Rank", value="1", inline=True)
-    # embed.add_field(name="Rank", value=f"{rank+1}/{ctx.guild.member_count}", inline=True)
+
+    boxes = int(xp / 100 * 10)
+    embed = discord.Embed(title=f"{user}'s level stats", description="", color=0x397882)
+    embed.add_field(name="XP", value=f"{xp}/100", inline=True)
+    embed.add_field(name="Level", value=ranking.players[user.id].level, inline=True)
     embed.add_field(
         name="Progress Bar [lvl]",
-        value=boxes * ":blue_square:" + (20 - boxes) * ":white_large_square:",
+        value=boxes * ":full_moon:" + (10 - boxes) * ":new_moon:",
         inline=False,
     )
+    embed.set_thumbnail(url=user.display_avatar)
     return embed
-    # embed.set_thumbnail(url=ctx.author.display_avatar)
