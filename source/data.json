@@ -1,14 +1,1 @@
-[
-    {
-        "game_name": "FIFA"
-    },
-    {
-        "game_name": "SIMS"
-    },
-    {
-        "game_name": "LOL"
-    },
-    {
-        "game_name": "Dota2"
-    }
-]
+[{"game_name": "FIFA"}, {"game_name": "SIMS"}, {"game_name": "LOL"}, {"game_name": "Dota2"}, {"game_name": "Test", "release_year": null, "rating": null, "developer": null}, {"game_name": "Terreria", "release_year": null, "rating": null, "developer": null}, {"game_name": "GTA", "release_year": null, "rating": null, "developer": null}, {"game_name": "RDR", "release_year": null, "rating": null, "developer": null}, {"game_name": "Test game", "release_year": null, "rating": null, "developer": null}, {"game_name": "Test1", "release_year": null, "rating": null, "developer": null}, {"game_name": "Test2", "release_year": null, "rating": null, "developer": null}, {"game_name": "afaf", "release_year": null, "rating": null, "developer": null}, {"game_name": "dgdfgd", "release_year": null, "rating": null, "developer": null}, {"game_name": "sfdagsd", "release_year": null, "rating": null, "developer": null}, {"game_name": "wgrsfg", "release_year": null, "rating": null, "developer": null}, {"game_name": "fgsgs", "release_year": null, "rating": null, "developer": null}]
