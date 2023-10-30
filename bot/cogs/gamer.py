@@ -43,13 +43,17 @@ async def refresh_channel_games(bot):
 
 
 class NewGame(discord.ui.Modal, title="New Game"):
-    name = discord.ui.TextInput(label="Name", placeholder="Type name here...", min_length=3, max_length=50)
+    name = discord.ui.TextInput(
+        label="Name", placeholder="Type name here...", min_length=3, max_length=50
+    )
 
     async def on_submit(self, interaction: discord.Interaction):
         games_source.add_game(self.name.value)
         embed = GameEmbeded(title=self.name.value)
         await interaction.response.send_message(
-            f"Thanks for your for adding new game, {self.name.value}!", ephemeral=True, embed=embed
+            f"Thanks for your for adding new game, {self.name.value}!",
+            ephemeral=True,
+            embed=embed,
         )
 
 
@@ -68,7 +72,11 @@ class Vue(discord.ui.View):
     def __init__(self):
         super().__init__()
 
-    @discord.ui.button(label="hello-button-2", custom_id="hello-button-2", style=discord.ButtonStyle.red)
+    @discord.ui.button(
+        label="hello-button-2",
+        custom_id="hello-button-2",
+        style=discord.ButtonStyle.red,
+    )
     async def hello_button_2(self, interaction, button: discord.Button):
         await interaction.response.send_message("HOLA")
 
@@ -91,7 +99,9 @@ class VoteButton(discord.ui.Button):
         if interaction.user.name in self.view.users:
             await interaction.response.send_message(f"Don't cheat. {interaction.user}")
         else:
-            await interaction.response.send_message(f"User {interaction.user}. Choose: {self.label}")
+            await interaction.response.send_message(
+                f"User {interaction.user}. Choose: {self.label}"
+            )
             self.view.results[self.label] = self.view.results[self.label] + 1
             self.view.users.append(interaction.user.name)
         return await super().callback(interaction)
@@ -120,12 +130,18 @@ class GammerCogs(commands.Cog):
     async def ranking(self, interaction: discord.Interaction):
         print(interaction.user)
         print(interaction.user.id)
-        await interaction.response.send_message(embed=get_ranking_embeded(interaction.user))
+        await interaction.response.send_message(
+            embed=get_ranking_embeded(interaction.user)
+        )
 
-    @discord.app_commands.command(name="hello-button", description="Bot says hello to you")
+    @discord.app_commands.command(
+        name="hello-button", description="Bot says hello to you"
+    )
     async def hello_button(self, interaction: discord.Interaction):
         view = discord.ui.View()
-        button = discord.ui.Button(label="hello", custom_id="hello", style=discord.ButtonStyle.red)
+        button = discord.ui.Button(
+            label="hello", custom_id="hello", style=discord.ButtonStyle.red
+        )
 
         async def button_callback(interaction: discord.Interaction):
             await interaction.response.send_message("hi")
@@ -134,7 +150,9 @@ class GammerCogs(commands.Cog):
         view.add_item(button)
         await interaction.response.send_message(view=view)
 
-    @discord.app_commands.command(name="hello-button-2", description="Bot says hello to you")
+    @discord.app_commands.command(
+        name="hello-button-2", description="Bot says hello to you"
+    )
     async def hello_button_2(self, interaction: discord.Interaction):
         await interaction.response.send_message(view=Vue())
 
@@ -142,14 +160,22 @@ class GammerCogs(commands.Cog):
     async def counter(self, interaction: discord.Interaction):
         await interaction.response.send_message(view=CounterView())
 
-    @discord.app_commands.command(name="animals", description="Get your favorite animal")
+    @discord.app_commands.command(
+        name="animals", description="Get your favorite animal"
+    )
     async def animals(self, interaction: discord.Interaction):
         view = discord.ui.View()
         select = discord.ui.Select(
             options=[
-                discord.SelectOption(label="monkey", description="if you like monkey click me", emoji="🐵"),
-                discord.SelectOption(label="panda", description="if you like panda click me", emoji="🐼"),
-                discord.SelectOption(label="dog", description="if you like monkey click me", emoji="🐶"),
+                discord.SelectOption(
+                    label="monkey", description="if you like monkey click me", emoji="🐵"
+                ),
+                discord.SelectOption(
+                    label="panda", description="if you like panda click me", emoji="🐼"
+                ),
+                discord.SelectOption(
+                    label="dog", description="if you like monkey click me", emoji="🐶"
+                ),
             ]
         )
 
@@ -161,7 +187,8 @@ class GammerCogs(commands.Cog):
         await interaction.response.send_message(f"Select your animals", view=view)
 
     @discord.app_commands.command(
-        name="random-choose-the-game", description="Help you to choose which game you want to play"
+        name="random-choose-the-game",
+        description="Help you to choose which game you want to play",
     )
     async def games(self, interaction: discord.Interaction):
         view = discord.ui.View()
@@ -170,7 +197,10 @@ class GammerCogs(commands.Cog):
             for game in games_source.get_games()
         ]
         select = discord.ui.Select(
-            placeholder="Choose your game!", min_values=2, max_values=len(options), options=options
+            placeholder="Choose your game!",
+            min_values=2,
+            max_values=len(options),
+            options=options,
         )
 
         async def select_callback(interaction: discord.Interaction):
@@ -213,12 +243,20 @@ class GammerCogs(commands.Cog):
         embed.set_thumbnail(url="https://i.imgur.com/axLm3p6.jpeg")
 
         embed.add_field(
-            name="Field 1 Title", value="This is the value for field 1. This is NOT an inline field.", inline=False
+            name="Field 1 Title",
+            value="This is the value for field 1. This is NOT an inline field.",
+            inline=False,
         )
-        embed.add_field(name="Field 2 Title", value="It is inline with Field 3", inline=True)
-        embed.add_field(name="Field 3 Title", value="It is inline with Field 2", inline=True)
+        embed.add_field(
+            name="Field 2 Title", value="It is inline with Field 3", inline=True
+        )
+        embed.add_field(
+            name="Field 3 Title", value="It is inline with Field 2", inline=True
+        )
 
-        embed.set_footer(text="This is the footer. It contains text at the bottom of the embed")
+        embed.set_footer(
+            text="This is the footer. It contains text at the bottom of the embed"
+        )
         embed = GameEmbeded()
         await interaction.response.send_message(embed=embed)
         await refresh_channel_games(self.bot)
