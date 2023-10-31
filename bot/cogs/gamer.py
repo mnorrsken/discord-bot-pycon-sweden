@@ -2,50 +2,30 @@ import random
 
 import discord
 from discord.ext import commands
-from source.main import games_source
+from source.games.engine import games_source
 from config import CHANNEL_ID
-from bot.ranking_embeded import get_ranking_embeded, add_xp
-
-# https://replit.com/@maxc0dez/levelling-system#levelsys.py
+from source.ranking.engine import get_ranking, add_xp
 
 
 async def refresh_channel_games(bot):
-    # Getting the channel
     channel = bot.get_channel(CHANNEL_ID)
-    # channel.purge
-    # channel.get
-    # channel.delete_messages()
-    # Getting the role
-    # role = discord.utils.get(channel.guild.roles, name='Orange')
-    # Sending the message
     await channel.purge(limit=5)
 
-    # embed
-    # nameslist = '\n'.join(nameslist) # Joining the list with newline as the delimiter
-    # for game in games_source.get_games():
     games = games_source.get_games()
-    print(games)
-    # nameslist = "\n".join(games)
-    # print(nameslist)
     embeds = []
     for game in games[:10]:
         em = discord.Embed(
             title=game,
-            # url="https://realdrewdata.medium.com/",
             description="This is an embed that will show how to build an embed and the different components",
             color=0x109319,
         )
         embeds.append(em)
-        # embeds.add_field(name="GAMES", value=nameslist)
-    print(embeds)
     message = await channel.send(embeds=embeds)
     await channel.send(view=VoteView())
 
 
 class NewGame(discord.ui.Modal, title="New Game"):
-    name = discord.ui.TextInput(
-        label="Name", placeholder="Type name here...", min_length=3, max_length=50
-    )
+    name = discord.ui.TextInput(label="Name", placeholder="Type name here...", min_length=3, max_length=50)
 
     async def on_submit(self, interaction: discord.Interaction):
         games_source.add_game(self.name.value)
@@ -61,8 +41,7 @@ class GameEmbeded(discord.Embed):
     def __init__(self, title):
         super().__init__(
             title=title,
-            url="https://store.steampowered.com/app/1811260/EA_SPORTS_FIFA_23/",
-            # https://store.steampowered.com/search/?term=Fifa+23
+            url=f"https://store.steampowered.com/search/?term={title}",
             description="This is an embed that will show how to build an embed and the different components",
             color=0x109319,
         )
@@ -99,9 +78,7 @@ class VoteButton(discord.ui.Button):
         if interaction.user.name in self.view.users:
             await interaction.response.send_message(f"Don't cheat. {interaction.user}")
         else:
-            await interaction.response.send_message(
-                f"User {interaction.user}. Choose: {self.label}"
-            )
+            await interaction.response.send_message(f"User {interaction.user}. Choose: {self.label}")
             self.view.results[self.label] = self.view.results[self.label] + 1
             self.view.users.append(interaction.user.name)
         return await super().callback(interaction)
@@ -128,20 +105,23 @@ class GammerCogs(commands.Cog):
 
     @discord.app_commands.command(name="ranking", description="get ranking")
     async def ranking(self, interaction: discord.Interaction):
-        print(interaction.user)
-        print(interaction.user.id)
-        await interaction.response.send_message(
-            embed=get_ranking_embeded(interaction.user)
+        xp, level = get_ranking(interaction.user)
+        boxes = int(xp / 100 * 10)
+        embed = discord.Embed(title=f"{interaction.user}'s level stats", description="", color=0x397882)
+        embed.add_field(name="XP", value=f"{xp}/100", inline=True)
+        embed.add_field(name="Level", value=level, inline=True)
+        embed.add_field(
+            name="Progress Bar [lvl]",
+            value=boxes * ":full_moon:" + (10 - boxes) * ":new_moon:",
+            inline=True,
         )
+        embed.set_thumbnail(url=interaction.user.display_avatar)
+        await interaction.response.send_message(embed=embed)
 
-    @discord.app_commands.command(
-        name="hello-button", description="Bot says hello to you"
-    )
+    @discord.app_commands.command(name="hello-button", description="Bot says hello to you")
     async def hello_button(self, interaction: discord.Interaction):
         view = discord.ui.View()
-        button = discord.ui.Button(
-            label="hello", custom_id="hello", style=discord.ButtonStyle.red
-        )
+        button = discord.ui.Button(label="hello", custom_id="hello", style=discord.ButtonStyle.red)
 
         async def button_callback(interaction: discord.Interaction):
             await interaction.response.send_message("hi")
@@ -150,9 +130,7 @@ class GammerCogs(commands.Cog):
         view.add_item(button)
         await interaction.response.send_message(view=view)
 
-    @discord.app_commands.command(
-        name="hello-button-2", description="Bot says hello to you"
-    )
+    @discord.app_commands.command(name="hello-button-2", description="Bot says hello to you")
     async def hello_button_2(self, interaction: discord.Interaction):
         await interaction.response.send_message(view=Vue())
 
@@ -160,22 +138,15 @@ class GammerCogs(commands.Cog):
     async def counter(self, interaction: discord.Interaction):
         await interaction.response.send_message(view=CounterView())
 
-    @discord.app_commands.command(
-        name="animals", description="Get your favorite animal"
-    )
+    @discord.app_commands.command(name="animals", description="Get your favorite animal")
     async def animals(self, interaction: discord.Interaction):
         view = discord.ui.View()
+
         select = discord.ui.Select(
             options=[
-                discord.SelectOption(
-                    label="monkey", description="if you like monkey click me", emoji="🐵"
-                ),
-                discord.SelectOption(
-                    label="panda", description="if you like panda click me", emoji="🐼"
-                ),
-                discord.SelectOption(
-                    label="dog", description="if you like monkey click me", emoji="🐶"
-                ),
+                discord.SelectOption(label="monkey", description="if you like monkey click me", emoji="🐵"),
+                discord.SelectOption(label="panda", description="if you like panda click me", emoji="🐼"),
+                discord.SelectOption(label="dog", description="if you like monkey click me", emoji="🐶"),
             ]
         )
 
@@ -218,15 +189,11 @@ class GammerCogs(commands.Cog):
     @discord.app_commands.command(name="add-new-game", description="Select game")
     async def new_game(self, interaction: discord.Interaction):
         await interaction.response.send_modal(NewGame())
-        # await add
         add_xp(interaction.user)
         await refresh_channel_games(self.bot)
 
     @discord.app_commands.command(name="game-details", description="Select game")
     async def game_details(self, interaction: discord.Interaction):
-        # view =
-        # self.
-        view = discord.ui.View()
         embed = discord.Embed(
             title="Sample Embed",
             url="https://realdrewdata.medium.com/",
@@ -247,16 +214,10 @@ class GammerCogs(commands.Cog):
             value="This is the value for field 1. This is NOT an inline field.",
             inline=False,
         )
-        embed.add_field(
-            name="Field 2 Title", value="It is inline with Field 3", inline=True
-        )
-        embed.add_field(
-            name="Field 3 Title", value="It is inline with Field 2", inline=True
-        )
+        embed.add_field(name="Field 2 Title", value="It is inline with Field 3", inline=True)
+        embed.add_field(name="Field 3 Title", value="It is inline with Field 2", inline=True)
 
-        embed.set_footer(
-            text="This is the footer. It contains text at the bottom of the embed"
-        )
+        embed.set_footer(text="This is the footer. It contains text at the bottom of the embed")
         embed = GameEmbeded()
         await interaction.response.send_message(embed=embed)
         await refresh_channel_games(self.bot)

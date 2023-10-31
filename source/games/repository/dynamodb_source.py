@@ -1,5 +1,5 @@
 import boto3
-from source.strategy import SourceFileStrategy
+from source.games.repository.strategy import SourceFileStrategy
 
 
 class DynamoDBDataSource(SourceFileStrategy):

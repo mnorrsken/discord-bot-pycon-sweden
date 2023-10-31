@@ -1,10 +1,10 @@
 import json
-from source.strategy import SourceFileStrategy
+from source.games.repository.strategy import SourceFileStrategy
 
 
 class JsonFileStrategy(SourceFileStrategy):
     def __init__(self):
-        self.file = "source/data.json"
+        self.file = "source/games/repository/data.json"
 
     def get_games(self):
         with open(self.file, "r") as file:
