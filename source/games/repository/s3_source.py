@@ -1,4 +1,3 @@
-from typing import Optional
 import boto3
 import json
 from source.games.repository.strategy import SourceFileStrategy

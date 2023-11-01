@@ -159,7 +159,9 @@ class GammerCogs(commands.Cog):
         select = discord.ui.Select(
             options=[
                 discord.SelectOption(
-                    label="monkey", description="if you like monkey click me", emoji="🐵"
+                    label="monkey",
+                    description="if you like monkey click me",
+                    emoji="🐵",
                 ),
                 discord.SelectOption(
                     label="panda", description="if you like panda click me", emoji="🐼"
