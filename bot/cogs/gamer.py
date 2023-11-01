@@ -2,42 +2,24 @@ import random
 
 import discord
 from discord.ext import commands
-from source.main import games_source
+from source.games.engine import games_source
 from config import CHANNEL_ID
-from bot.ranking_embeded import get_ranking_embeded, add_xp
-
-# https://replit.com/@maxc0dez/levelling-system#levelsys.py
+from source.ranking.engine import get_ranking, add_xp
 
 
 async def refresh_channel_games(bot):
-    # Getting the channel
     channel = bot.get_channel(CHANNEL_ID)
-    # channel.purge
-    # channel.get
-    # channel.delete_messages()
-    # Getting the role
-    # role = discord.utils.get(channel.guild.roles, name='Orange')
-    # Sending the message
     await channel.purge(limit=5)
 
-    # embed
-    # nameslist = '\n'.join(nameslist) # Joining the list with newline as the delimiter
-    # for game in games_source.get_games():
     games = games_source.get_games()
-    print(games)
-    # nameslist = "\n".join(games)
-    # print(nameslist)
     embeds = []
     for game in games[:10]:
         em = discord.Embed(
             title=game,
-            # url="https://realdrewdata.medium.com/",
             description="This is an embed that will show how to build an embed and the different components",
             color=0x109319,
         )
         embeds.append(em)
-        # embeds.add_field(name="GAMES", value=nameslist)
-    print(embeds)
     message = await channel.send(embeds=embeds)
     await channel.send(view=VoteView())
 
@@ -61,8 +43,7 @@ class GameEmbeded(discord.Embed):
     def __init__(self, title):
         super().__init__(
             title=title,
-            url="https://store.steampowered.com/app/1811260/EA_SPORTS_FIFA_23/",
-            # https://store.steampowered.com/search/?term=Fifa+23
+            url=f"https://store.steampowered.com/search/?term={title}",
             description="This is an embed that will show how to build an embed and the different components",
             color=0x109319,
         )
@@ -128,11 +109,20 @@ class GammerCogs(commands.Cog):
 
     @discord.app_commands.command(name="ranking", description="get ranking")
     async def ranking(self, interaction: discord.Interaction):
-        print(interaction.user)
-        print(interaction.user.id)
-        await interaction.response.send_message(
-            embed=get_ranking_embeded(interaction.user)
+        xp, level = get_ranking(interaction.user)
+        boxes = int(xp / 100 * 10)
+        embed = discord.Embed(
+            title=f"{interaction.user}'s level stats", description="", color=0x397882
         )
+        embed.add_field(name="XP", value=f"{xp}/100", inline=True)
+        embed.add_field(name="Level", value=level, inline=True)
+        embed.add_field(
+            name="Progress Bar [lvl]",
+            value=boxes * ":full_moon:" + (10 - boxes) * ":new_moon:",
+            inline=True,
+        )
+        embed.set_thumbnail(url=interaction.user.display_avatar)
+        await interaction.response.send_message(embed=embed)
 
     @discord.app_commands.command(
         name="hello-button", description="Bot says hello to you"
@@ -165,6 +155,7 @@ class GammerCogs(commands.Cog):
     )
     async def animals(self, interaction: discord.Interaction):
         view = discord.ui.View()
+
         select = discord.ui.Select(
             options=[
                 discord.SelectOption(
@@ -218,15 +209,11 @@ class GammerCogs(commands.Cog):
     @discord.app_commands.command(name="add-new-game", description="Select game")
     async def new_game(self, interaction: discord.Interaction):
         await interaction.response.send_modal(NewGame())
-        # await add
         add_xp(interaction.user)
         await refresh_channel_games(self.bot)
 
     @discord.app_commands.command(name="game-details", description="Select game")
     async def game_details(self, interaction: discord.Interaction):
-        # view =
-        # self.
-        view = discord.ui.View()
         embed = discord.Embed(
             title="Sample Embed",
             url="https://realdrewdata.medium.com/",
@@ -246,12 +233,6 @@ class GammerCogs(commands.Cog):
             name="Field 1 Title",
             value="This is the value for field 1. This is NOT an inline field.",
             inline=False,
-        )
-        embed.add_field(
-            name="Field 2 Title", value="It is inline with Field 3", inline=True
-        )
-        embed.add_field(
-            name="Field 3 Title", value="It is inline with Field 2", inline=True
         )
 
         embed.set_footer(

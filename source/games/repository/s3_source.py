@@ -1,7 +1,7 @@
 from typing import Optional
 import boto3
 import json
-from source.strategy import SourceFileStrategy
+from source.games.repository.strategy import SourceFileStrategy
 
 
 class S3DataSource(SourceFileStrategy):
