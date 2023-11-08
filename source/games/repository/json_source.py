@@ -1,22 +1,23 @@
 import json
+
 from source.games.repository.strategy import SourceFileStrategy
 
 
 class JsonFileStrategy(SourceFileStrategy):
     def __init__(self):
-        self.file = "source/games/repository/data.json"
+        self.file = 'source/games/repository/data.json'
 
     def get_games(self):
-        with open(self.file, "r") as file:
+        with open(self.file) as file:
             data = json.load(file)
-        return [game["game_name"] for game in data]
+        return [game['game_name'] for game in data]
 
     def get_game(self, game_name: str):
-        with open(self.file, "r") as file:
+        with open(self.file) as file:
             data = json.load(file)
 
         for item in data:
-            if item["game_name"] == game_name:
+            if item['game_name'] == game_name:
                 return item
             return None
 
@@ -27,18 +28,18 @@ class JsonFileStrategy(SourceFileStrategy):
         rating: int | None = None,
         developer: str | None = None,
     ):
-        with open(self.file, "r") as file:
+        with open(self.file) as file:
             data = json.load(file)
 
         new_game = {
-            "game_name": game_name,
-            "release_year": release_year,
-            "rating": rating,
-            "developer": developer,
+            'game_name': game_name,
+            'release_year': release_year,
+            'rating': rating,
+            'developer': developer,
         }
         data.append(new_game)
 
-        with open(self.file, "w") as file:
+        with open(self.file, 'w') as file:
             json.dump(data, file)
 
     def update_game(
@@ -47,25 +48,25 @@ class JsonFileStrategy(SourceFileStrategy):
         new_game_name: str | None = None,
         new_rating: int | None = None,
     ):
-        with open(self.file, "r") as file:
+        with open(self.file) as file:
             data = json.load(file)
 
         for item in data:
-            if item["game_name"] == game_name:
+            if item['game_name'] == game_name:
                 if new_game_name is not None:
-                    item["game_name"] = new_game_name
+                    item['game_name'] = new_game_name
                 if new_rating is not None:
-                    item["rating"] = new_rating
+                    item['rating'] = new_rating
                 break
 
-        with open(self.file, "w") as file:
+        with open(self.file, 'w') as file:
             json.dump(data, file)
 
     def delete_game(self, game_name: str):
-        with open(self.file, "r") as file:
+        with open(self.file) as file:
             data = json.load(file)
 
-        data = [item for item in data if item["game_name"] != game_name]
+        data = [item for item in data if item['game_name'] != game_name]
 
-        with open(self.file, "w") as file:
+        with open(self.file, 'w') as file:
             json.dump(data, file)

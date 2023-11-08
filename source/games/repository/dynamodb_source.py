@@ -1,21 +1,22 @@
 import boto3
+
 from source.games.repository.strategy import SourceFileStrategy
 
 
 class DynamoDBDataSource(SourceFileStrategy):
     def __init__(self, table_name: str):
         self.table_name = table_name
-        self.dynamodb = boto3.resource("dynamodb")
+        self.dynamodb = boto3.resource('dynamodb')
         self.table = self.dynamodb.Table(table_name)
 
     def get_games(self):
         response = self.table.scan()
-        games = response.get("Items", [])
+        games = response.get('Items', [])
         return games
 
     def get_game(self, game_name: str):
-        response = self.table.get_item(Key={"game_name": game_name})
-        game = response.get("Item")
+        response = self.table.get_item(Key={'game_name': game_name})
+        game = response.get('Item')
         return game
 
     def add_game(
@@ -26,10 +27,10 @@ class DynamoDBDataSource(SourceFileStrategy):
         developer: str | None = None,
     ):
         new_game = {
-            "game_name": game_name,
-            "release_year": release_year,
-            "rating": rating,
-            "developer": developer,
+            'game_name': game_name,
+            'release_year': release_year,
+            'rating': rating,
+            'developer': developer,
         }
         response = self.table.put_item(Item=new_game)
         return response
@@ -40,33 +41,33 @@ class DynamoDBDataSource(SourceFileStrategy):
         new_game_name: str | None = None,
         new_rating: int | None = None,
     ):
-        response = self.table.get_item(Key={"game_name": game_name})
-        game = response.get("Item")
+        response = self.table.get_item(Key={'game_name': game_name})
+        game = response.get('Item')
 
         if game:
             updated_game = game.copy()
             if new_game_name is not None:
-                updated_game["game_name"] = new_game_name
+                updated_game['game_name'] = new_game_name
             if new_rating is not None:
-                updated_game["rating"] = new_rating
+                updated_game['rating'] = new_rating
 
         self.table.put_item(Item=updated_game)
 
         if new_game_name != game_name:
-            self.table.delete_item(Key={"game_name": game_name})
-            print(f"Updated the game information for {game_name} with {new_game_name}")
+            self.table.delete_item(Key={'game_name': game_name})
+            print(f'Updated the game information for {game_name} with {new_game_name}')
         else:
-            print(f"No game found with name {game_name}")
+            print(f'No game found with name {game_name}')
 
     def delete_game(self, game_name: str):
-        response = self.table.get_item(Key={"game_name": game_name})
-        game = response.get("Item")
+        response = self.table.get_item(Key={'game_name': game_name})
+        game = response.get('Item')
 
         if game:
-            response = self.table.delete_item(Key={"game_name": game_name})
-            print(f"Deleted the game {game_name}")
+            response = self.table.delete_item(Key={'game_name': game_name})
+            print(f'Deleted the game {game_name}')
         else:
-            print(f"No game found with name {game_name}")
+            print(f'No game found with name {game_name}')
 
 
 # dynamo_db_source = DynamoDBDataSource(table_name="games")

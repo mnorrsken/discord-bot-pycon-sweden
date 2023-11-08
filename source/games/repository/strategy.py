@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import List, Optional
 
 
 class SourceFileStrategy(ABC):
     @abstractmethod
-    def get_games(self):
+    def get_games(self) -> List[str]:
         pass
 
     @abstractmethod

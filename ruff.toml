@@ -1,0 +1,27 @@
+line-length = 120
+[lint]
+# select = ["E4", "E7", "E9", "F", "B"]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+    "UP",  # pyupgrade
+]
+# Never enforce `E501` (line length violations).
+ignore = ["E501"]
+
+# Avoid trying to fix flake8-bugbear (`B`) violations.
+unfixable = ["B"]
+
+# Ignore `E402` (import violations) in all `__init__.py` files, and in select subdirectories.
+[lint.per-file-ignores]
+"__init__.py" = ["E402"]
+"**/{tests,docs,tools}/*" = ["E402"]
+
+[format]
+# Use single quotes for non-triple-quoted strings.
+quote-style = "single"
+
