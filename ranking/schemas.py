@@ -1,5 +1,3 @@
-from typing import Dict
-
 from pydantic import BaseModel
 
 
@@ -9,4 +7,4 @@ class PlayerDetails(BaseModel):
 
 
 class Ranking(BaseModel):
-    players: Dict[str, PlayerDetails]
+    players: dict[str, PlayerDetails]

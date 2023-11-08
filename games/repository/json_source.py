@@ -1,5 +1,4 @@
 import json
-from typing import List
 
 from games.repository.strategy import SourceFileStrategy
 from games.schemas import Game
@@ -9,7 +8,7 @@ class JsonFileStrategy(SourceFileStrategy):
     def __init__(self) -> None:
         self.file = 'games/repository/data.json'
 
-    def get_games(self) -> List[Game]:
+    def get_games(self) -> list[Game]:
         with open(self.file) as file:
             data = json.load(file)
         return [game['name'] for game in data]

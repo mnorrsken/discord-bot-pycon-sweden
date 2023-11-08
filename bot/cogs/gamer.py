@@ -1,5 +1,4 @@
 import random
-from typing import List
 
 import discord
 from discord.ext import commands
@@ -13,8 +12,8 @@ async def refresh_channel_games(bot) -> None:
     channel = bot.get_channel(CHANNEL_ID)
     await channel.purge(limit=5)
 
-    games: List[str] = games_source.get_games()
-    embeds: List[discord.Embed] = []
+    games: list[str] = games_source.get_games()
+    embeds: list[discord.Embed] = []
     embeds = [
         discord.Embed(
             title=game,
@@ -109,10 +108,10 @@ class GammerCogs(commands.Cog):
 
     @discord.app_commands.command(name='ranking', description='get ranking')
     async def ranking(self, interaction: discord.Interaction) -> None:
-        xp, level = get_ranking(interaction.user.id)
-        boxes = int(xp / 100 * 10)
+        xp, level, max_xp = get_ranking(interaction.user.id)
+        boxes = int(xp / max_xp * 10)
         embed = discord.Embed(title=f"{interaction.user}'s level stats", description='', color=0x397882)
-        embed.add_field(name='XP', value=f'{xp}/100', inline=True)
+        embed.add_field(name='XP', value=f'{xp}/{max_xp}', inline=True)
         embed.add_field(name='Level', value=level, inline=True)
         embed.add_field(
             name='Progress Bar [lvl]',

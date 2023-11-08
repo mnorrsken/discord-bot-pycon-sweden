@@ -10,7 +10,7 @@ from games.repository.json_source import JsonFileStrategy
 def json_source(tmp_path) -> JsonFileStrategy:
     test_file = tmp_path / 'test_data.json'
     with open(test_file, 'w') as file:
-        test_data = [{'name': 'Game1'}, {'name': 'Game2'}]
+        test_data: list[dict[str, str]] = [{'name': 'Game1'}, {'name': 'Game2'}]
         json.dump(test_data, file)
 
     json_source = JsonFileStrategy()

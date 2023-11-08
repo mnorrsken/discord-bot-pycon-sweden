@@ -1,12 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional
 
 from games.schemas import Game
 
 
 class SourceFileStrategy(ABC):
     @abstractmethod
-    def get_games(self) -> List[Game]:
+    def get_games(self) -> list[Game]:
         pass
 
     @abstractmethod
@@ -17,9 +16,9 @@ class SourceFileStrategy(ABC):
     def add_game(
         self,
         name: str,
-        release_year: Optional[int] = None,
-        rating: Optional[int] = None,
-        developer: Optional[str] = None,
+        release_year: int | None = None,
+        rating: int | None = None,
+        developer: str | None = None,
     ) -> Game:
         pass
 
@@ -27,8 +26,8 @@ class SourceFileStrategy(ABC):
     def update_game(
         self,
         name: str,
-        new_game_name: Optional[str] = None,
-        new_rating: Optional[int] = None,
+        new_game_name: str | None = None,
+        new_rating: int | None = None,
     ) -> Game:
         pass
 

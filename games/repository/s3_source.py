@@ -1,5 +1,4 @@
 import json
-from typing import List
 
 import boto3
 
@@ -13,7 +12,7 @@ class S3DataSource(SourceFileStrategy):
         self.object_key: str = object_key
         self.s3 = boto3.client('s3')
 
-    def get_games(self) -> List[Game]:
+    def get_games(self) -> list[Game]:
         try:
             response = self.s3.get_object(Bucket=self.bucket_name, Key=self.object_key)
             data = json.loads(response['Body'].read().decode('utf-8'))
