@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 from typing import Dict
+
+from pydantic import BaseModel
 
 
 class PlayerDetails(BaseModel):
@@ -7,5 +8,5 @@ class PlayerDetails(BaseModel):
     level: int
 
 
-class Players(BaseModel):
+class Ranking(BaseModel):
     players: Dict[str, PlayerDetails]

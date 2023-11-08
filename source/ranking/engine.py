@@ -1,12 +1,13 @@
 from typing import Union
-from discord import User, Member
+
+from discord import Member, User
 
 from source.ranking.repository.repository import open_players_file, save_players_file
-from source.ranking.schemas import PlayerDetails
+from source.ranking.schemas import PlayerDetails, Ranking
 
 
-def add_xp(user: Union[User, Member]):
-    ranking = open_players_file()
+def add_xp(user: Union[User, Member]) -> None:
+    ranking: Ranking = open_players_file()
     user_id = str(user.id)
 
     if user_id in ranking.players:
@@ -21,10 +22,10 @@ def add_xp(user: Union[User, Member]):
 
 
 def get_ranking(user: Union[User, Member]) -> [str, int]:
-    ranking = open_players_file()
+    ranking: Ranking = open_players_file()
     user_id = str(user.id)
     if user_id in ranking.players:
-        xp = ranking.players[user_id].exp
+        xp: int = ranking.players[user_id].exp
     else:
         ranking.players[user_id] = PlayerDetails(exp=0, level=1)
         xp = 0
