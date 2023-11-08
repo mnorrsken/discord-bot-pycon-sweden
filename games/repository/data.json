@@ -1,0 +1,32 @@
+[
+    {
+        "name": "FIFA"
+    },
+    {
+        "name": "SIMS"
+    },
+    {
+        "name": "LOL"
+    },
+    {
+        "name": "Dota2"
+    },
+    {
+        "name": "Terreria",
+        "release_year": null,
+        "rating": null,
+        "developer": null
+    },
+    {
+        "name": "GTA 6",
+        "release_year": null,
+        "rating": null,
+        "developer": null
+    },
+    {
+        "name": "Jumanji",
+        "release_year": null,
+        "rating": null,
+        "developer": null
+    }
+]

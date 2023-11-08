@@ -5,8 +5,8 @@ import discord
 from discord.ext import commands
 
 from config import CHANNEL_ID
-from source.games.engine import games_source
-from source.ranking.engine import add_xp, get_ranking
+from games.engine import games_source
+from ranking.engine import add_xp, get_ranking
 
 
 async def refresh_channel_games(bot) -> None:
@@ -101,7 +101,7 @@ class VoteView(discord.ui.View):
 
 class GammerCogs(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
-        self.bot = bot
+        self.bot: Bot = bot
 
     @discord.app_commands.command(name='hello', description='Bot says hello to you')
     async def hello(self, interaction: discord.Interaction) -> None:
@@ -197,7 +197,7 @@ class GammerCogs(commands.Cog):
     @discord.app_commands.command(name='add-new-game', description='Select game')
     async def new_game(self, interaction: discord.Interaction):
         await interaction.response.send_modal(NewGame())
-        add_xp(interaction.user)
+        add_xp(interaction.user.id)
         await refresh_channel_games(self.bot)
 
     @discord.app_commands.command(name='game-details', description='Select game')
