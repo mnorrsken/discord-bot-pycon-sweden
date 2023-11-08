@@ -7,7 +7,7 @@ from games.schemas import Game
 
 class JsonFileStrategy(SourceFileStrategy):
     def __init__(self) -> None:
-        self.file = 'source/games/repository/data.json'
+        self.file = 'games/repository/data.json'
 
     def get_games(self) -> List[Game]:
         with open(self.file) as file:

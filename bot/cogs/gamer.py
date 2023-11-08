@@ -32,7 +32,7 @@ class NewGame(discord.ui.Modal, title='New Game'):
     name = discord.ui.TextInput(label='Name', placeholder='Type name here...', min_length=3, max_length=50)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
-        games_source.add_game(self.name.value)
+        games_source.add_game(name=self.name.value)
         embed = GameEmbeded(title=self.name.value)
         await interaction.response.send_message(
             f'Thanks for your for adding new game, {self.name.value}!',
@@ -42,10 +42,10 @@ class NewGame(discord.ui.Modal, title='New Game'):
 
 
 class GameEmbeded(discord.Embed):
-    def __init__(self, title) -> None:
+    def __init__(self, title: str) -> None:
         super().__init__(
             title=title,
-            url=f'http://store.steampowered.com/search/?term={title}',
+            url=f'http://store.steampowered.com/search/?term={title.replace(" ", "+")}',
             description='This is an embed that will show how to build an embed and the different components',
             color=0x109319,
         )
@@ -101,7 +101,7 @@ class VoteView(discord.ui.View):
 
 class GammerCogs(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
-        self.bot: Bot = bot
+        self.bot = bot
 
     @discord.app_commands.command(name='hello', description='Bot says hello to you')
     async def hello(self, interaction: discord.Interaction) -> None:
@@ -109,7 +109,7 @@ class GammerCogs(commands.Cog):
 
     @discord.app_commands.command(name='ranking', description='get ranking')
     async def ranking(self, interaction: discord.Interaction) -> None:
-        xp, level = get_ranking(interaction.user)
+        xp, level = get_ranking(interaction.user.id)
         boxes = int(xp / 100 * 10)
         embed = discord.Embed(title=f"{interaction.user}'s level stats", description='', color=0x397882)
         embed.add_field(name='XP', value=f'{xp}/100', inline=True)

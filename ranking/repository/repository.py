@@ -1,21 +1,23 @@
 import json
+from typing import Dict, List
 
-from source.ranking.schemas import PlayerDetails, Ranking
+from ranking.schemas import PlayerDetails, Ranking
 
-file_path_ranking = 'source/ranking/repository/players.json'
+file_path_ranking = 'ranking/repository/players.json'
 
 
-def open_players_file() -> Ranking:
+def open_players_file() -> List[PlayerDetails]:
     try:
-        with open('source/ranking/repository/players.json') as file:
+        with open(file_path_ranking) as file:
             data = json.load(file)
-            converted_data = {'players': {str(key): PlayerDetails(**value) for key, value in data['players'].items()}}
-            return Ranking(**converted_data)
+            ranking = Ranking(**data)
+            return ranking.players
     except FileNotFoundError:
-        return Ranking(players={})
+        ranking = Ranking(players={})
+        return ranking.players
 
 
-def save_players_file(data: Ranking) -> None:
-    converted_data = {'players': {int(key): value.dict() for key, value in data.players.items()}}
-    with open('source/ranking/repository/players.json', 'w') as file:
-        json.dump(converted_data, file, indent=4)
+def save_players_file(players: Dict[str, PlayerDetails]) -> None:
+    ranking = Ranking(players=players)
+    with open(file_path_ranking, 'w') as file:
+        json.dump(ranking.model_dump(), file, indent=4)

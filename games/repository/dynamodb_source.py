@@ -55,7 +55,7 @@ class DynamoDBDataSource(SourceFileStrategy):
 
         if new_game_name != name:
             self.table.delete_item(Key={'name': name})
-            print(f'Updated the game information for {name} with {new_name}')
+            print(f'Updated the game information for {name} with {new_game_name}')
         else:
             print(f'No game found with name {name}')
 
