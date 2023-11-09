@@ -108,7 +108,7 @@ class GammerCogs(commands.Cog):
 
     @discord.app_commands.command(name='ranking', description='get ranking')
     async def ranking(self, interaction: discord.Interaction) -> None:
-        xp, level, max_xp = get_ranking(interaction.user.id)
+        xp, max_xp, level = get_ranking(interaction.user.id)
         boxes = int(xp / max_xp * 10)
         embed = discord.Embed(title=f"{interaction.user}'s level stats", description='', color=0x397882)
         embed.add_field(name='XP', value=f'{xp}/{max_xp}', inline=True)
