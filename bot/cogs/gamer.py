@@ -8,4 +8,5 @@ class GammerCogs(commands.Cog):
 
     @discord.app_commands.command(name='hello', description='Bot says hello to you')
     async def hello(self, interaction: discord.Interaction) -> None:
-        await interaction.response.send_message(f'Hello {interaction.user.name}!')
+        # send a two line message with a banana emoji
+        await interaction.response.send_message(f'Hello {interaction.user.name} :banana:!')
